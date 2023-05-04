@@ -16,6 +16,8 @@ import {
 import { useState } from 'react';
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 import { Link as ReachLink } from 'react-router-dom';
+import Swal from 'sweetalert2'
+import axios from '../plugins/axios';
 
 export default function Register() {
   const [showPassword, setShowPassword] = useState(false);
@@ -37,6 +39,27 @@ export default function Register() {
   const handleRegister = async e => {
     e.preventDefault();
     console.log(data);
+
+    try {
+      const response = await axios({
+        method: 'POST',
+        url: '/register',
+        data: {
+          email: data.email,
+          password: data.password,
+        },
+      })
+      console.log(response)
+      Swal.fire('Connexion réussie', '', 'success').then(() => {
+        localStorage.setItem('patient', JSON.stringify(response.data.patient))
+        localStorage.setItem('patient-token', response.data.token)
+        // navigate(-2)
+      })
+    } catch (error) {
+      console.log(error)
+      Swal.fire('Erreur', '', 'error')
+    }
+
   };
 
   const [showPasswordConfirm, setShowPasswordConfirm] = useState(false);

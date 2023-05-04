@@ -8,6 +8,7 @@ import Login from './auth/Login';
 import { ChakraProvider, Box, Grid, theme } from '@chakra-ui/react';
 
 function App() {
+
   return (
     <ChakraProvider theme={theme}>
       <Box textAlign="center" fontSize="xl">
