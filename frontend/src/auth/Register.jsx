@@ -1,86 +1,144 @@
+import {
+  Button,
+  Flex,
+  FormControl,
+  InputRightElement,
+  Text,
+  InputGroup,
+  Box,
+  FormLabel,
+  HStack,
+  Input,
+  Link,
+  Stack,
+  Image,
+} from '@chakra-ui/react';
 import { useState } from 'react';
-import Box from '@mui/material/Box';
-import Paper from '@mui/material/Paper';
-import Grid from '@mui/material/Grid';
-import TextField from '@mui/material/TextField';
-import Button from '@mui/material/Button';
-import axios from 'axios';
+import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
+import { Link as ReachLink } from 'react-router-dom';
 
-function RegisterForm() {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [error, setError] = useState(null);
+export default function Register() {
+  const [showPassword, setShowPassword] = useState(false);
+  const [data, setData] = useState({
+    firstName: '',
+    lastName: '',
+    email: '',
+    password: '',
+    password_confirmation: '',
+  });
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const response = await axios.post('http://127.0.0.1:8000/api/register', {
-        name,
-        email,
-        password,
-        password_confirmation: confirmPassword,
-      });
-      console.log(response.data);
-      // handle success or failure
-    } catch (err) {
-      setError(err.message);
-    }
+  const handleChange = e => {
+    setData({
+      ...data,
+      [e.target.id]: e.target.value,
+    });
   };
 
-  return (
-    <Grid container spacing={2} justify="center">
-      <Grid item xs={12} sm={8} md={6} lg={4}>
-        <Paper style={{ padding: '20px' }}>
-          <form onSubmit={handleSubmit}>
-            <TextField
-              label="Name"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              fullWidth
-              required
-            />
-            <TextField
-              label="Email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              fullWidth
-              required
-            />
-            <TextField
-              label="Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              type="password"
-              fullWidth
-              required
-            />
-            <TextField
-              label="Confirm Password"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              type="password"
-              fullWidth
-              required
-            />
-            <Button
-              type="submit"
-              variant="contained"
-              color="primary"
-              fullWidth
-              style={{ marginTop: '20px' }}
-              onClick={handleSubmit}
+  const handleRegister = async e => {
+    e.preventDefault();
+    console.log(data);
+  };
 
-            >
-              Register
-            </Button>
-            {error && <p>{error}</p>}
+  const [showPasswordConfirm, setShowPasswordConfirm] = useState(false);
+  return (
+    <Stack minH={'100vh'} direction={{ base: 'column', md: 'row' }}>
+      <Flex p={8} flex={1} align={'center'} justify={'center'}>
+        <Stack spacing={4}>
+          <form onSubmit={handleRegister}>
+            <HStack>
+              <Box>
+                <FormControl id="firstName" isRequired>
+                  <FormLabel>First Name</FormLabel>
+                  <Input type="text" onChange={handleChange} />
+                </FormControl>
+              </Box>
+              <Box>
+                <FormControl id="lastName">
+                  <FormLabel>Last Name</FormLabel>
+                  <Input type="text" onChange={handleChange} />
+                </FormControl>
+              </Box>
+            </HStack>
+            <FormControl id="email" isRequired>
+              <FormLabel>Email address</FormLabel>
+              <Input type="email" onChange={handleChange} />
+            </FormControl>
+            <FormControl id="password" isRequired>
+              <FormLabel>Password</FormLabel>
+              <InputGroup>
+                <Input
+                  type={showPassword ? 'text' : 'password'}
+                  onChange={handleChange}
+                />
+                <InputRightElement h={'full'}>
+                  <Button
+                    variant={'ghost'}
+                    onClick={() =>
+                      setShowPassword(showPassword => !showPassword)
+                    }
+                  >
+                    {showPassword ? <ViewIcon /> : <ViewOffIcon />}
+                  </Button>
+                </InputRightElement>
+              </InputGroup>
+            </FormControl>
+            <FormControl id="password_confirmation" isRequired>
+              <FormLabel>Confirm Password</FormLabel>
+              <InputGroup>
+                <Input
+                  type={showPasswordConfirm ? 'text' : 'password'}
+                  onChange={handleChange}
+                />
+                <InputRightElement h={'full'}>
+                  <Button
+                    variant={'ghost'}
+                    onClick={() =>
+                      setShowPasswordConfirm(
+                        showPasswordConfirm => !showPasswordConfirm
+                      )
+                    }
+                  >
+                    {showPasswordConfirm ? <ViewIcon /> : <ViewOffIcon />}
+                  </Button>
+                </InputRightElement>
+              </InputGroup>
+            </FormControl>
+            <Stack spacing={10} pt={2} mt={'10'}>
+              <Button
+                loadingText="Submitting"
+                type="submit"
+                size="lg"
+                bg={'red.400'}
+                color={'white'}
+                _hover={{
+                  bg: 'red.500',
+                }}
+              >
+                Sign up
+              </Button>
+            </Stack>
+            <Stack pt={6}>
+              <Text align={'center'}>
+                Already a user?{' '}
+                <Link color={'red.400'} as={ReachLink} to={'/login'}>
+                  <ReachLink to={'/login'}>Login</ReachLink>
+                </Link>
+              </Text>
+            </Stack>
           </form>
-        </Paper>
-      </Grid>
-    </Grid>
+        </Stack>
+      </Flex>
+      <Flex flex={1}>
+        <Image
+          alt={'Login Image'}
+          h={'100vh'}
+          w={'100%'}
+          objectFit={'cover'}
+          src={
+            'https://images.pexels.com/photos/1805053/pexels-photo-1805053.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'
+          }
+        />
+      </Flex>
+    </Stack>
   );
 }
-
-export default RegisterForm;
